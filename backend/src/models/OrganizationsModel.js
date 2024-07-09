@@ -1,6 +1,5 @@
 // models/OrganizationsModel.js
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 
 const OrganizationSchema = new mongoose.Schema({
   name: {

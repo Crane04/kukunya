@@ -9,9 +9,12 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-navigation/native": "^6.1.17",
+    "@react-navigation/stack": "^6.4.0",
     "expo": "~51.0.18",
     "expo-status-bar": "~1.12.1",
     "react": "18.2.0",
+    "react-hook-form": "^7.52.1",
     "react-native": "0.74.3",
     "react-native-twitter-signin": "^1.1.1"
   },

@@ -1,4 +1,4 @@
-POST http://localhost:3000/accts/signup
+POST https://kukunya.onrender.com/accts/signup
 Content-Type: application/json
 
 {
@@ -24,3 +24,29 @@ Content-Type: application/json
 GET https://kukunya.onrender.com/accts/current
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGNmYmEyMDkyMjZhOWQ5ZDYxMzVhZSIsImlhdCI6MTcyMDUzMjU4OCwiZXhwIjoxNzIzMTI0NTg4fQ.AtcH2l60Pi7zsoJHhGjm20ljgWEnahm89W6LTivxBwE
+
+###
+POST http://localhost:3000/auth/user/signup
+Content-Type: application/json
+
+{
+    "first_name": "mayowa",
+    "last_name": "yusuf",
+    "NIN": "12345678901",
+    "customId": "new1",
+    "email": "mayowayusuf3004@gmail.com",
+    "password": "mayowa"
+}
+###
+
+POST http://localhost:3000/auth/user/signin
+Content-Type: application/json
+
+{
+    "email": "mayowayusuf3004@gmail.com",
+    "password": "mayowa"
+}
+
+###
+GET http://localhost:3000/auth/user/current
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGQ0ZmY0NjY5MmI2NDhmMzA3OTBiNyIsImlhdCI6MTcyMDUzNzc4OSwiZXhwIjoxNzIzMTI5Nzg5fQ.Ow5oDGAepv69_JuyFk0XYlNto7wgPl2qtuqkSMsSUGM
