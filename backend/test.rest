@@ -1,0 +1,26 @@
+POST http://localhost:3000/accts/signup
+Content-Type: application/json
+
+{
+    "name": "new1",
+    "location": "new1",
+    "type": "station",
+    "customId": "new1",
+    "email": "new1",
+    "password": "new1"
+}
+
+###
+POST http://localhost:3000/accts/signin
+Content-Type: application/json
+
+{
+    "customId": "new1",
+    "password": "new1"
+}
+
+
+###
+GET http://localhost:3000/accts/current
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGNmYmEyMDkyMjZhOWQ5ZDYxMzVhZSIsImlhdCI6MTcyMDUxNjQxMywiZXhwIjoxNzIzMTA4NDEzfQ.0yED0ft-knw_DJYnq1UASzUMek9tZ-eWcM1hLeyivBI
