@@ -5,7 +5,7 @@ const app_sk = process.env.APP_SK;
 
 const ValidateOrganization = async (req, res, next) => {
     let token;
-    let authHeader = req.headers.Authorization || req.headers.authorization || req.cookies.jwt;
+    let authHeader = req?.headers?.Authorization || req?.headers?.authorization || req?.cookies?.jwt;
 
     if (authHeader && authHeader.startsWith("Bearer")) {
         token = authHeader.split(" ")[1];

@@ -11,7 +11,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:3000/accts/signin
+POST https://kukunya.onrender.com/accts/signin
 Content-Type: application/json
 
 {
@@ -21,6 +21,6 @@ Content-Type: application/json
 
 
 ###
-GET http://localhost:3000/accts/current
+GET https://kukunya.onrender.com/accts/current
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGNmYmEyMDkyMjZhOWQ5ZDYxMzVhZSIsImlhdCI6MTcyMDUxNjQxMywiZXhwIjoxNzIzMTA4NDEzfQ.0yED0ft-knw_DJYnq1UASzUMek9tZ-eWcM1hLeyivBI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGNmYmEyMDkyMjZhOWQ5ZDYxMzVhZSIsImlhdCI6MTcyMDUzMjU4OCwiZXhwIjoxNzIzMTI0NTg4fQ.AtcH2l60Pi7zsoJHhGjm20ljgWEnahm89W6LTivxBwE
