@@ -5,7 +5,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useNavigation } from '@react-navigation/native';
 import apiRequest from '../helpers/postData';  // Adjust the path as necessary
 
-const OnboardingScreen = () => {
+const LoginScreen = () => {
   const { control, handleSubmit, formState: { errors } } = useForm();
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
@@ -13,14 +13,14 @@ const OnboardingScreen = () => {
   const onSubmit = async data => {
     setLoading(true);
     try {
-      const response = await apiRequest('/auth/user/signup', data);
+      const response = await apiRequest('/auth/user/signin', data);
       console.log(response);
       setLoading(false);
-      if (response?.data?.email) {
+      if (response?.user) {
         console.log("Successful")
-        return Alert.alert('Success', 'Signup successful!', [{ text: 'OK', onPress: () => navigation.navigate('Login') }]);
+        return Alert.alert('Success', 'Sign In successful!', [{ text: 'OK', onPress: () => navigation.navigate('Home') }]);
       } else {
-        Alert.alert('Error', response["error"]);
+        Alert.alert('Error', response["message"]);
       }
     } catch (error) {
       console.error("Signup request failed: ", error);
@@ -35,58 +35,7 @@ const OnboardingScreen = () => {
       style={styles.container}
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.title}>Onboarding</Text>
-        <Controller
-          control={control}
-          rules={{ required: 'First name is required' }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={styles.input}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              placeholder="First Name"
-            />
-          )}
-          name="first_name"
-          defaultValue=""
-        />
-        {errors.first_name && <Text style={styles.error}>{errors.first_name.message}</Text>}
-
-        <Controller
-          control={control}
-          rules={{ required: 'Last name is required' }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={styles.input}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              placeholder="Last Name"
-            />
-          )}
-          name="last_name"
-          defaultValue=""
-        />
-        {errors.last_name && <Text style={styles.error}>{errors.last_name.message}</Text>}
-
-        <Controller
-          control={control}
-          rules={{ required: 'NIN is required' }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={styles.input}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              placeholder="NIN"
-            />
-          )}
-          name="NIN"
-          defaultValue=""
-        />
-        {errors.NIN && <Text style={styles.error}>{errors.NIN.message}</Text>}
-
+        <Text style={styles.title}>Login</Text>
         <Controller
           control={control}
           rules={{ required: 'Email is required' }}
@@ -168,4 +117,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OnboardingScreen;
+export default LoginScreen;
