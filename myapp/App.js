@@ -5,18 +5,18 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Onboarding from './src/screens/Onboarding';
 import Home from './src/screens/Home';
 import Login from './src/screens/Login';
-import MapView from './src/screens/MapView';
+import Map from './src/screens/Map';
 
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="Map">
       <Stack.Screen name="Onboarding" component={Onboarding} />
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="MapView" component={MapView} />
+      <Stack.Screen name="Map" component={Map} />
       </Stack.Navigator>
     </NavigationContainer>
   );

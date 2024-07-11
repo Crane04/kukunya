@@ -23,6 +23,16 @@ const OrganizationSchema = new mongoose.Schema({
     unique: true,
     required: [true, "custom ID is required"],
   },
+  latitude:{
+    type: String,
+    unique: true,
+    required: [true, "longitude is required"],
+  },
+  longitude: {
+    type: String,
+    unique: true,
+    required: [true, "latitude is required"],
+  },
   email: {
     type: String,
     unique: true,
@@ -32,6 +42,7 @@ const OrganizationSchema = new mongoose.Schema({
     type: String,
     required: [true, "password is required"],
   },
+
 });
 
 
