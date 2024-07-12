@@ -21,6 +21,12 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.get("/", (req, res) => {
+    return res.status(200).json({
+        "message": "okay"
+    })
+})
 app.use("/auth/organizations", orgAuthRouter);
 app.use("/auth/user", userAuthRouter);
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions } from 'react-native';
 import useLocation from '../hooks/useLocation';
+import { base_url } from '../utils/constants';
 import io from 'socket.io-client';
 
 const HomeScreen = () => {
@@ -11,7 +12,8 @@ const HomeScreen = () => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const socketInstance = io('http://your-socket-server-url'); // Replace with your Socket.IO server URL
+    const socketInstance = io(base_url); // Replace with your Socket.IO server URL
+    console.log(socketInstance)
     setSocket(socketInstance);
 
     return () => {

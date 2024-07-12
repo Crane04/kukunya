@@ -1,36 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-
+import { GoogleMap, LoadScript, Marker, InfoWindow, TrafficLayer } from '@react-google-maps/api';
+// 
 const MyMapComponent = () => {
-  const [currentLocation, setCurrentLocation] = useState([6.5867, 3.9700]); // Default location
-  const [zoom, setZoom] = useState(13);
+  const [currentLocation, setCurrentLocation] = useState({ lat: 6.5868, lng: 3.9949 }); // Default location
+  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [showTraffic, setShowTraffic] = useState(true);
 
   const dangerLocations = [
-    { name: 'Location 2', coordinates: [6.5887, 3.9720] },
-    { name: 'Location 3', coordinates: [6.5897, 3.9730] },
-    { name: 'Location 4', coordinates: [6.5907, 3.9740] },
-    { name: 'Location 5', coordinates: [7.5917, 3.9750] }
+    { name: 'Location 2', coordinates: { lat: 6.5887, lng: 3.9720 } },
+    { name: 'Location 3', coordinates: { lat: 6.5897, lng: 3.9730 } },
+    { name: 'Location 4', coordinates: { lat: 3.5907, lng: 3.9740 } },
+    { name: 'Location 5', coordinates: { lat: 7.5917, lng: 3.9750 } }
   ];
-
-  const customMarkerIcon = new L.Icon({
-    iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-    shadowSize: [41, 41]
-  });
-
-  const customMarkerIcon2 = new L.Icon({
-    iconUrl: 'https://cdn-icons-png.flaticon.com/512/7906/7906677.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-    shadowSize: [41, 41]
-  });
 
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
     const toRad = (value) => (value * Math.PI) / 180;
@@ -44,31 +25,71 @@ const MyMapComponent = () => {
     return R * c; // Distance in km
   };
 
-  return (
-    <MapContainer center={currentLocation} zoom={zoom} style={{ height: '100vh', width: '100%' }}>
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      <Marker position={currentLocation} icon={customMarkerIcon}>
-        <Popup>
-          You are here.
-        </Popup>
-      </Marker>
+  const handleToggle = () => {
+    setShowTraffic((prev) => !prev);
+  };
 
-      {dangerLocations.map((location, index) => {
-        const distance = calculateDistance(
-          currentLocation[0],
-          currentLocation[1],
-          location.coordinates[0],
-          location.coordinates[1]
-        ).toFixed(2);
-        return (
-          <Marker key={index} position={location.coordinates} icon={customMarkerIcon2}>
-            <Popup>{`${location.name} - ${distance} km away`}</Popup>
-          </Marker>
-        );
-      })}
-    </MapContainer>
+  return (
+    <LoadScript googleMapsApiKey="AIzaSyAIZAHqq0Gpw0yNcq6LgsQd9EAGpee5sMg">
+      <div style={{ position: 'relative', height: '100vh', width: '100%' }}>
+        <button
+          onClick={handleToggle}
+          style={{
+            position: 'absolute',
+            top: 10,
+            left: 10,
+            zIndex: 10,
+            padding: '10px 20px',
+            background: '#fff',
+            border: 'none',
+            cursor: 'pointer'
+          }}
+        >
+          
+          Show My Location
+        </button>
+        <GoogleMap
+          mapContainerStyle={{ height: '100%', width: '100%' }}
+          center={currentLocation}
+          zoom={13}
+        >
+          {showTraffic && <TrafficLayer />}
+          {showTraffic && (
+            <>
+              <Marker
+                position={currentLocation}
+                onClick={() => setSelectedMarker({ name: 'You are here', ...currentLocation })}
+              />
+              {selectedMarker && (
+                <InfoWindow
+                  position={{ lat: selectedMarker.lat, lng: selectedMarker.lng }}
+                  onCloseClick={() => setSelectedMarker(null)}
+                >
+                  <div>
+                    <h2>{selectedMarker.name}</h2>
+                  </div>
+                </InfoWindow>
+              )}
+              {/* {dangerLocations.map((location, index) => {
+                const distance = calculateDistance(
+                  currentLocation.lat,
+                  currentLocation.lng,
+                  location.coordinates.lat,
+                  location.coordinates.lng
+                ).toFixed(2);
+                return (
+                  <Marker
+                    key={index}
+                    position={location.coordinates}
+                    onClick={() => setSelectedMarker({ name: `${location.name} - ${distance} km away`, ...location.coordinates })}
+                  />
+                );
+              })} */}
+            </>
+          )}
+        </GoogleMap>
+      </div>
+    </LoadScript>
   );
 };
 
