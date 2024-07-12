@@ -58,7 +58,10 @@ body, html {
   .login-button:hover {
     background-color: #0056b3;
   }
-  
+  .error{
+    color: red;
+    font-weight: bold
+  }
   /* Responsive Design */
   @media (max-width: 600px) {
     .login-container {
