@@ -5,7 +5,12 @@ const http = require('http');
 const socketIo = require('socket.io');
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIO(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
+});
 const orgAuthRouter = require("./routes/organizations/authRouter");
 const userAuthRouter = require("./routes/users/authRouter");
 const db_url = process.env.DB_URL;
