@@ -13,7 +13,8 @@ const ValidateOrganization = async (req, res, next) => {
         jwt.verify(token, app_sk, async (err, decoded) => {
             if (err) {
                 return res.status(401).json({
-                    "detail": "Organization is unauthenticated!"
+                    "detail": "Organization is unauthenticated!",
+                    "status": 401
                 });
             }
 

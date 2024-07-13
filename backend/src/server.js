@@ -5,6 +5,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const app = express();
 const server = http.createServer(app);
+const cookieParser = require("cookie-parser")
 const io = socketIo(server, {
     cors: {
         origin: "*",
@@ -15,6 +16,7 @@ const orgAuthRouter = require("./routes/organizations/authRouter");
 const userAuthRouter = require("./routes/users/authRouter");
 const db_url = process.env.DB_URL;
 const port = process.env.PORT || 3000;
+const app_sk = process.env.APP_SK
 const cors = require('cors');
 
 const corsOptions = {
@@ -24,6 +26,7 @@ const corsOptions = {
     credentials: true
 };
 
+app.use(cookieParser(app_sk))
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

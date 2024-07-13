@@ -30,7 +30,9 @@ const signInOrganizations = asyncHandler(async (req, res) => {
 
   const token = jwt.sign({ id: organization._id }, app_sk, { expiresIn: '30d' });
 
-  res.json({
+  res.cookie("jwt", `${token}`, { maxAge: 86400000000000, httpOnly: false });
+
+  return res.json({
     message: 'Login successful',
     token,
     organization: organization.customId

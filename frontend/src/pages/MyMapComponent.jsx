@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { GoogleMap, LoadScript, Marker, InfoWindow, TrafficLayer } from '@react-google-maps/api';
 import io from 'socket.io-client';
-
-const socket = io('https://kukunya.onrender.com'); // Replace with your Socket.IO server URL
+import getData from "../helpers/getData";
 
 const MyMapComponent = () => {
   const [currentLocation, setCurrentLocation] = useState({ lat: 6.5868, lng: 3.9949 }); // Default location
@@ -10,28 +9,54 @@ const MyMapComponent = () => {
   const [showTraffic, setShowTraffic] = useState(true);
   const [selectedEmergency, setSelectedEmergency] = useState(null);
   const [emergencyMarker, setEmergencyMarker] = useState(null);
-
-  const [dangerLocations, setDangerLocations] = useState([])
+  const [dangerLocations, setDangerLocations] = useState([]);
+  const [organization, setOrganization] = useState(null);
 
   useEffect(() => {
-    socket.on('connect', () => {
+    const fetchData = async () => {
+      try {
+        const response = await getData('/auth/organizations/current');
+        if (response.status === 401) {
+          console.log(response.status);
+          setOrganization(401);
+
+          return
+        }
+        setOrganization(response);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const socketRef = useRef(null);
+
+  useEffect(() => {
+    socketRef.current = io('https://kukunya.onrender.com');
+
+    socketRef.current.on('connect', () => {
       console.log('WebSocket connected');
     });
 
-    socket.on('locationUpdate', (data) => {
-      console.log('Received emergency data:', data);
-      setSelectedEmergency(data);
-      setEmergencyMarker(data.coordinates);
+    socketRef.current.on('locationUpdate', (data) => {
+      console.log('Received location update:', data);
+      // Update dangerLocations only if distance is within 0-5km
+      const distance = calculateDistance(currentLocation, data.coordinates);
+      if (distance >= 0 && distance <= 5) {
+        setDangerLocations((prevLocations) => [...prevLocations, { ...data, distance }]);
+      }
     });
 
-    socket.on('disconnect', () => {
+    socketRef.current.on('disconnect', () => {
       console.log('WebSocket disconnected');
     });
 
     return () => {
-      socket.disconnect();
+      socketRef.current.disconnect();
     };
-  }, []);
+  }, [currentLocation]);
 
   const handleToggle = () => {
     setSelectedMarker({ name: 'You are here', ...currentLocation });
@@ -53,17 +78,19 @@ const MyMapComponent = () => {
   };
 
   const handleShowInMapClick = (location) => {
-    setEmergencyMarker({ name: location.name, ...location.coordinates });
+    console.log(location);
+    const { latitude, longitude } = location.coordinates;
+    setEmergencyMarker({ name: location.name, ...{ lat: latitude, lng: longitude } });
   };
 
   const calculateDistance = (location1, location2) => {
     const R = 6371; // Radius of the Earth in km
-    const dLat = ((location2.lat - location1.lat) * Math.PI) / 180;
-    const dLng = ((location2.lng - location1.lng) * Math.PI) / 180;
+    const dLat = ((location2.latitude - location1.lat) * Math.PI) / 180;
+    const dLng = ((location2.longitude - location1.lng) * Math.PI) / 180;
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos((location1.lat * Math.PI) / 180) *
-      Math.cos((location2.lat * Math.PI) / 180) *
+      Math.cos((location2.latitude * Math.PI) / 180) *
       Math.sin(dLng / 2) *
       Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
@@ -71,13 +98,20 @@ const MyMapComponent = () => {
     return distance.toFixed(2);
   };
 
-  return (
+  if (!organization) {
+    return <h1>Loading...</h1>;
+  }
+  else if (organization == 401) {
+    {console.log(23)}
+    return <h1>Unauthorized, please login</h1>;
+  }
+  else return (
     <LoadScript googleMapsApiKey="AIzaSyAIZAHqq0Gpw0yNcq6LgsQd9EAGpee5sMg">
       <div style={styles.container}>
         <header style={styles.header}>
           <div style={styles.headerLeft}>Kukunya</div>
           <div style={styles.headerRight}>
-            <div style={styles.organizationName}>Organization Name</div>
+            <div style={styles.organizationName}>{organization?.organization?.name}</div>
             <button onClick={handleLogout} style={styles.logoutButton}>
               Logout
             </button>
@@ -133,20 +167,20 @@ const MyMapComponent = () => {
           </div>
           <div style={styles.sidebar}>
             <h2>Emergencies</h2>
-            {dangerLocations.map((location) => (
+            {dangerLocations.map((location, index) => (
               <div
-                key={location.id}
+                key={index}
                 style={styles.emergencyItem}
                 onClick={() => handleEmergencyClick(location)}
               >
                 <div style={styles.emergencyHeader}>
-                  <span>{location.name}</span>
-                  <span>{calculateDistance(currentLocation, location.coordinates)} km away</span>
+                  <span>Emergency</span>
+                  <span>{location.distance} km away</span>
                 </div>
                 {selectedEmergency && selectedEmergency.id === location.id && (
                   <div style={styles.emergencyDetails}>
-                    <p>Latitude: {location.coordinates.lat}</p>
-                    <p>Longitude: {location.coordinates.lng}</p>
+                    <p>Latitude: {location.coordinates.latitude}</p>
+                    <p>Longitude: {location.coordinates.longitude}</p>
                     <button
                       style={styles.showInMapButton}
                       onClick={() => handleShowInMapClick(location)}

@@ -1,4 +1,3 @@
-
 import { base_url } from '../utils/constants';
 
 const postData = async (path, data) => {
@@ -9,6 +8,7 @@ const postData = async (path, data) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
+      credentials: 'include' // Ensure credentials are included
     });
 
     return await response.json();
