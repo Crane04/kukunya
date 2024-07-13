@@ -51,12 +51,12 @@ io.on('connection', (socket) => {
     
     // Receiving latitude and longitude from the client
     socket.on('sendLocation', (data) => {
-        const { latitude, longitude } = data;
+        const { latitude, longitude, type } = data;
         console.log(`Received location: ${latitude}, ${longitude}`);
 
         // You can process the location data here or broadcast it to other clients
         // For example, broadcasting to all connected clients except the sender
-        socket.broadcast.emit('locationUpdate', { latitude, longitude });
+        socket.broadcast.emit('locationUpdate', {coordinates:{ latitude, longitude }, type });
     });
 
     // Disconnect event

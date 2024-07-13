@@ -11,19 +11,14 @@ const MyMapComponent = () => {
   const [selectedEmergency, setSelectedEmergency] = useState(null);
   const [emergencyMarker, setEmergencyMarker] = useState(null);
 
-  const dangerLocations = [
-    { id: 1, name: 'Location 2', coordinates: { lat: 6.5887, lng: 3.9720 } },
-    { id: 2, name: 'Location 3', coordinates: { lat: 6.5897, lng: 3.9730 } },
-    { id: 3, name: 'Location 4', coordinates: { lat: 3.5907, lng: 3.9740 } },
-    { id: 4, name: 'Location 5', coordinates: { lat: 7.5917, lng: 3.9750 } }
-  ];
+  const [dangerLocations, setDangerLocations] = useState([])
 
   useEffect(() => {
     socket.on('connect', () => {
       console.log('WebSocket connected');
     });
 
-    socket.on('emergency', (data) => {
+    socket.on('locationUpdate', (data) => {
       console.log('Received emergency data:', data);
       setSelectedEmergency(data);
       setEmergencyMarker(data.coordinates);
