@@ -1,14 +1,8 @@
 // src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-// import Navbar from './components/Navbar';
-// import Home from './components/Home';
 import Login from './pages/Login';
 import MyMapComponent from './pages/MyMapComponent';
-// import Signup from './components/Signup';
-// import Profile from './components/Profile';
-// import ProtectedRoute from './components/ProtectedRoute';
-// src/components/Navbar.js
 import { Link } from 'react-router-dom';
 const Home = () => {
   return <h2>Home Page</h2>;

@@ -70,7 +70,7 @@ const HomeScreen = () => {
                 type: type
               });
               setConfirmationMessage(
-                type === 'police'
+                type === 'station'
                   ? 'Nearest Police Station has been notified!'
                   : 'Nearest Hospital has been notified!'
               );
@@ -115,7 +115,7 @@ const HomeScreen = () => {
         <Text>Getting Your Location...</Text>
       )}
 
-      <TouchableOpacity style={styles.btn} onPress={() => { Alarm("police") }}>
+      <TouchableOpacity style={styles.btn} onPress={() => { Alarm("station") }}>
         <Text style={styles.btnText}>Alarm Police</Text>
       </TouchableOpacity>
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { GoogleMap, LoadScript, Marker, InfoWindow, TrafficLayer } from '@react-google-maps/api';
+import  { Link } from "react-router-dom"
 import io from 'socket.io-client';
 import getData from "../helpers/getData";
 
@@ -44,7 +45,7 @@ const MyMapComponent = () => {
       console.log('Received location update:', data);
       // Update dangerLocations only if distance is within 0-5km
       const distance = calculateDistance(currentLocation, data.coordinates);
-      if (distance >= 0 && distance <= 5) {
+      if (distance >= 0 && distance <= 5 && organization.organization.name == data.type) {
         setDangerLocations((prevLocations) => [...prevLocations, { ...data, distance }]);
       }
     });
@@ -94,16 +95,16 @@ const MyMapComponent = () => {
       Math.sin(dLng / 2) *
       Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c; // Distance in km
+    const distance = R * c;
     return distance.toFixed(2);
   };
 
   if (!organization) {
-    return <h1>Loading...</h1>;
+    return <p>Loading...</p>;
   }
   else if (organization == 401) {
     {console.log(23)}
-    return <h1>Unauthorized, please login</h1>;
+    return <p>Unauthorized, <Link to = {"/login"}>please login</Link> </p>;
   }
   else return (
     <LoadScript googleMapsApiKey="AIzaSyAIZAHqq0Gpw0yNcq6LgsQd9EAGpee5sMg">

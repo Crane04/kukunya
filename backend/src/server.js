@@ -6,6 +6,7 @@ const socketIo = require('socket.io');
 const app = express();
 const server = http.createServer(app);
 const cookieParser = require("cookie-parser")
+const issueRoutes = require('./routes/issues/issuesRouter');
 const io = socketIo(server, {
     cors: {
         origin: "*",
@@ -35,6 +36,7 @@ app.get("/", (req, res) => {
         "message": "okay"
     })
 })
+app.use('/issues', issueRoutes);
 app.use("/auth/organizations", orgAuthRouter);
 app.use("/auth/user", userAuthRouter);
 

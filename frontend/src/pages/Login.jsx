@@ -17,6 +17,7 @@ const Login = () => {
       const response = await postData('/auth/organizations/signin', { customId, password });
       console.log(response)
       if (response.token) {
+        localStorage.setItem('token', response.token);
         // Handle successful login, e.g., store token, redirect to another page
         console.log('Login successful', response);
         setError(response.message)
