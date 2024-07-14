@@ -77,10 +77,10 @@ const MyMapComponent = () => {
   };
 
   const handleResponseClick = (emergency) => {
-    // Add your response logic here
-    console.log(`Responding to ${emergency.name}`);
-    socket.emit("respondToEmergency", {emergencyId: emergency.user})
-    
+    console.log(emergency);
+    if (socketRef.current) {
+      socketRef.current.emit("respondToEmergency", { emergencyId: emergency.user });
+    }
   };
 
   const handleShowInMapClick = (location) => {

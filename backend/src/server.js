@@ -53,21 +53,20 @@ mongoose.connect(db_url)
 // Socket.io setup
 io.on('connection', (socket) => {
     console.log('New client connected');
-    
+
     socket.on('sendLocation', (data) => {
         const { latitude, longitude, type, user } = data;
         console.log(`Received location: ${latitude}, ${longitude}`);
 
-        // Broadcast location update to all clients except the sender
         socket.broadcast.emit('locationUpdate', { coordinates: { latitude, longitude }, type, user });
     });
 
     // Handling the respondToEmergency event
     socket.on('respondToEmergency', (data) => {
-        console.log(`Received response to emergency: ${data.emergencyId} from ${data.responder}`);
-        
+        console.log(`Received response to emergency: ${data.emergencyId}`);
+
         // Broadcasting to all clients that help is on the way
-        io.emit('helpOnTheWay', { emergencyId: data.emergencyId, responder: data.responder });
+        socket.to(data.emergencyId).emit('helpOnTheWay', { emergencyId: data.emergencyId });
     });
 
     socket.on('disconnect', () => {
