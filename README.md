@@ -11,9 +11,11 @@ Download app at https://expo.dev/accounts/rahmayowa/projects/myapp/builds/5c1976
 
 Visit https://kukunya.netlify.app
 
-Login with ID: rafce12
+Login with ID: new1
 
-Password: lasuhospital1
+Password:new1
+
+This Organization Type is a Police Station and will receive Police Station Reports only!
 
 ## How It Works
 1. User Authentication:
