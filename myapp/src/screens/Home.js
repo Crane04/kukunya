@@ -65,7 +65,7 @@ const HomeScreen = () => {
       console.error('Error connecting to Socket.IO server:', error);
     });
 
-    socketInstance.on('onHelpFounded', () => {
+    socketInstance.on('helpOnTheWay', () => {
       setConfirmationMessage('Help is coming!');
     });
 
