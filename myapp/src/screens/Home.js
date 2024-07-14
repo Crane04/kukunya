@@ -65,6 +65,10 @@ const HomeScreen = () => {
       console.error('Error connecting to Socket.IO server:', error);
     });
 
+    socketInstance.on('onHelpFounded', () => {
+      setConfirmationMessage('Help is coming!');
+    });
+
     return () => {
       console.log('Disconnecting from Socket.IO server...');
       socketInstance.disconnect();
@@ -73,6 +77,8 @@ const HomeScreen = () => {
 
   const Alarm = (type) => {
     if (socket && myLocation) {
+      const socketId = socket.id; // Get the socket ID
+      console.log(socketId)
       Alert.alert(
         'Confirmation',
         `Are you sure you want to send a ${type} alarm?`,
@@ -90,7 +96,7 @@ const HomeScreen = () => {
                 latitude: myLocation.latitude,
                 longitude: myLocation.longitude,
                 type: type,
-                user: userData.email
+                user: socketId // Send the socket ID
               });
               setConfirmationMessage(
                 type === 'station'
@@ -146,7 +152,7 @@ const HomeScreen = () => {
         <Text>Getting Your Location...</Text>
       )}
 
-      <Text style={styles.loggedInText}>Logged in as: {userData.first_name}</Text>
+      <Text style={styles.loggedInText}>Logged in as: {userData.email}</Text>
 
       <TouchableOpacity style={styles.btn} onPress={() => { Alarm("station") }}>
         <Text style={styles.btnText}>Alarm Police</Text>

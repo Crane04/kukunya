@@ -1,3 +1,4 @@
+// screens/LoginScreen.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
@@ -22,7 +23,7 @@ const LoginScreen = () => {
         // Save user details to AsyncStorage
         await AsyncStorage.setItem('userDetails', JSON.stringify(response.user));
 
-        Alert.alert('Success', 'Sign In successful!', [{ text: 'OK', onPress: () => navigation.navigate('Home') }]);
+        Alert.alert('Success', 'Sign In successful!', [{ text: 'OK', onPress: () => navigation.navigate('Tabs') }]);
       } else {
         Alert.alert('Error', response["message"]);
       }
@@ -79,6 +80,10 @@ const LoginScreen = () => {
         <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)} disabled={loading}>
           {loading ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.buttonText}>Submit</Text>}
         </TouchableOpacity>
+
+        <TouchableOpacity style={styles.onboardingButton} onPress={() => navigation.navigate('Onboarding')}>
+          <Text style={styles.onboardingButtonText}>Don't have an account? Sign Up</Text>
+        </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -118,6 +123,15 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 16,
+  },
+  onboardingButton: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  onboardingButtonText: {
+    color: '#007BFF',
+    fontSize: 16,
+    textDecorationLine: 'underline',
   },
 });
 

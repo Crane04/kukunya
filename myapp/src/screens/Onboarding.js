@@ -126,6 +126,10 @@ const OnboardingScreen = () => {
         <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)} disabled={loading}>
           {loading ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.buttonText}>Submit</Text>}
         </TouchableOpacity>
+
+        <TouchableOpacity style={styles.signInButton} onPress={() => navigation.navigate('Login')}>
+          <Text style={styles.signInButtonText}>Have an account? Sign In</Text>
+        </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -165,6 +169,15 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 16,
+  },
+  signInButton: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  signInButtonText: {
+    color: '#007BFF',
+    fontSize: 16,
+    textDecorationLine: 'underline',
   },
 });
 

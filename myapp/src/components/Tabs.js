@@ -42,7 +42,7 @@ const Tabs = () => {
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={[styles.iconContainer, focused && styles.iconContainerActive]}>
-              <FontAwesome name="map-marker" size={24} color="black" />
+              <FontAwesome name="map-marker" size={24} color="#fff" />
               {focused && <Text style={styles.iconLabel}>Map</Text>}
             </View>
           ),

@@ -67,7 +67,9 @@ const MyMapComponent = () => {
 
   const handleLogout = () => {
     // Add your logout logic here
-    console.log('Logging out...');
+    localStorage.clear()
+    window.location.href = '/login';
+
   };
 
   const handleEmergencyClick = (emergency) => {
@@ -77,6 +79,8 @@ const MyMapComponent = () => {
   const handleResponseClick = (emergency) => {
     // Add your response logic here
     console.log(`Responding to ${emergency.name}`);
+    socket.emit("respondToEmergency", {emergencyId: emergency.user})
+    
   };
 
   const handleShowInMapClick = (location) => {
