@@ -45,7 +45,8 @@ const MyMapComponent = () => {
       console.log('Received location update:', data);
       // Update dangerLocations only if distance is within 0-5km
       const distance = calculateDistance(currentLocation, data.coordinates);
-      if (distance >= 0 && distance <= 5 && organization.organization.name == data.type) {
+      console.log(organization.organization.type, data.type)
+      if (distance >= 0 && distance <= 5 && organization.organization.type == data.type) {
         setDangerLocations((prevLocations) => [...prevLocations, { ...data, distance }]);
       }
     });

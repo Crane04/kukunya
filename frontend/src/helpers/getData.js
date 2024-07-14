@@ -10,7 +10,7 @@ const getData = async (path) => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}l` // Include the token in the Authorization header
+        'Authorization': `Bearer ${token}` // Include the token in the Authorization header
       },
       credentials: 'include' // Ensure cookies are included
     });

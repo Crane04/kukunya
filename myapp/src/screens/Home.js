@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions, Alert }
 import useLocation from '../hooks/useLocation';
 import { base_url } from '../utils/constants';
 import io from 'socket.io-client';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 
 const HomeScreen = () => {
   const scrollText = useRef(new Animated.Value(0)).current;
@@ -11,6 +13,26 @@ const HomeScreen = () => {
   const { location: myLocation, error } = useLocation();
   const [socket, setSocket] = useState(null);
   const [confirmationMessage, setConfirmationMessage] = useState('');
+  const [userData, setUserData] = useState(null);
+  const navigation = useNavigation(); // Use navigation
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const user = await AsyncStorage.getItem('userDetails');
+        if (user) {
+          setUserData(JSON.parse(user));
+        } else {
+          navigation.navigate('Login'); // Navigate to login if no user data
+        }
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+        navigation.navigate('Login');
+      }
+    };
+
+    fetchUserData();
+  }, [navigation]);
 
   useEffect(() => {
     const socketInstance = io(base_url, {
@@ -67,7 +89,8 @@ const HomeScreen = () => {
               socket.emit("sendLocation", {
                 latitude: myLocation.latitude,
                 longitude: myLocation.longitude,
-                type: type
+                type: type,
+                user: userData.email
               });
               setConfirmationMessage(
                 type === 'station'
@@ -99,6 +122,14 @@ const HomeScreen = () => {
     outputRange: [windowWidth, -windowWidth]
   });
 
+  if (!userData) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Animated.Text style={[styles.marqueeText, { transform: [{ translateX }] }]}>
@@ -114,6 +145,8 @@ const HomeScreen = () => {
       ) : (
         <Text>Getting Your Location...</Text>
       )}
+
+      <Text style={styles.loggedInText}>Logged in as: {userData.first_name}</Text>
 
       <TouchableOpacity style={styles.btn} onPress={() => { Alarm("station") }}>
         <Text style={styles.btnText}>Alarm Police</Text>
@@ -134,6 +167,11 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -165,6 +203,11 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: 'red',
+  },
+  loggedInText: {
+    marginBottom: 20,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   confirmationContainer: {
     marginTop: 20,

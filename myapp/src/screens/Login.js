@@ -1,8 +1,8 @@
-// screens/OnboardingScreen.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';  // Import AsyncStorage
 import apiRequest from '../helpers/postData';  // Adjust the path as necessary
 
 const LoginScreen = () => {
@@ -17,15 +17,19 @@ const LoginScreen = () => {
       console.log(response);
       setLoading(false);
       if (response?.user) {
-        console.log("Successful")
-        return Alert.alert('Success', 'Sign In successful!', [{ text: 'OK', onPress: () => navigation.navigate('Home') }]);
+        console.log("Successful");
+
+        // Save user details to AsyncStorage
+        await AsyncStorage.setItem('userDetails', JSON.stringify(response.user));
+
+        Alert.alert('Success', 'Sign In successful!', [{ text: 'OK', onPress: () => navigation.navigate('Home') }]);
       } else {
         Alert.alert('Error', response["message"]);
       }
     } catch (error) {
       console.error("Signup request failed: ", error);
       setLoading(false);
-      Alert.alert('Error', response["error"]);
+      Alert.alert('Error', error.message);  // Corrected to display error.message
     }
   };
 
