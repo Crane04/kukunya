@@ -58,7 +58,7 @@ const MyMapComponent = () => {
     return () => {
       socketRef.current.disconnect();
     };
-  }, [currentLocation]);
+  }, [currentLocation, organization]);
 
   const handleToggle = () => {
     setSelectedMarker({ name: 'You are here', ...currentLocation });
