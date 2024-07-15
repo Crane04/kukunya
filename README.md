@@ -11,9 +11,9 @@ Download app at https://expo.dev/accounts/rahmayowa/projects/myapp/builds/5c1976
 
 Visit https://kukunya.netlify.app
 
-Login with ID: new1
+Login with ID: rafce12
 
-Password:new1
+Password:lasuepehospital1
 
 Password: lasuepehospital1
 
