@@ -2,9 +2,11 @@ import React from 'react';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from '../screens/Home';
 import Map from '../screens/Map';
+import Issues from '../screens/Issues';
 import Entypo from "@expo/vector-icons/Entypo";
 import { View, Text, StyleSheet } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
@@ -32,6 +34,18 @@ const Tabs = () => {
             <View style={[styles.iconContainer, focused && styles.iconContainerActive]}>
               <Entypo name="home" size={24} color={"#fff"}  />
               {focused && <Text style={styles.iconLabel}>Home</Text>}
+            </View>
+          ),
+        }} 
+      />
+      <Tab.Screen 
+        name="Issues" 
+        component={Issues} 
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View style={[styles.iconContainer, focused && styles.iconContainerActive]}>
+              <AntDesign name="exclamationcircleo" size={24} color="#fff" />
+              {focused && <Text style={styles.iconLabel}>Issues</Text>}
             </View>
           ),
         }} 

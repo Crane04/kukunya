@@ -167,14 +167,14 @@ const HomeScreen = () => {
       {error && <Text style={styles.errorText}>{error}</Text>}
       {myLocation ? (
         <View style={styles.locationContainer}>
-          <Text>Latitude: {myLocation.latitude}</Text>
-          <Text>Longitude: {myLocation.longitude}</Text>
+          {/* <Text>Latitude: {myLocation.latitude}</Text>
+          <Text>Longitude: {myLocation.longitude}</Text> */}
         </View>
       ) : (
         <Text>Getting Your Location...</Text>
       )}
 
-      <Text style={styles.loggedInText}>Logged in as: {userData?.user?.email}</Text>
+      <Text style={styles.loggedInText}>Logged in as: {userData?.user?.first_name}</Text>
 
       <TouchableOpacity style={styles.btn} onPress={() => { Alarm("station") }}>
         <Text style={styles.btnText}>Alarm Police</Text>
