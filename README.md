@@ -2,7 +2,7 @@
 # Emergency Alert System
 ## Project Overview
 
-Kukunya (Cocooneer - To protect/shield) is a mobile application (aided by the government) designed to enhance personal safety (for their citizens) by quickly notifying nearby emergency services, such as police stations and hospitals, in case of an emergency. The system integrates a mobile app, a backend server, and real-time location tracking to ensure prompt assistance.
+Kukunya (Cocooneer - To protect/shield) is a mobile application (aided by the government) designed to enhance personal safety (for their citizens) by quickly notifying nearby emergency services(within 0-5km), such as police stations and hospitals, in case of an emergency. The system integrates a mobile app, a backend server, and real-time location tracking to ensure prompt assistance.
 
 ## Download App
 Download app at https://expo.dev/accounts/rahmayowa/projects/myapp/builds/5c19763f-6a61-4310-a0bd-6ce895ecdc89
@@ -11,7 +11,9 @@ Download app at https://expo.dev/accounts/rahmayowa/projects/myapp/builds/5c1976
 
 Visit https://kukunya.netlify.app
 
-Login with ID: rafce12
+Login with ID: new1
+
+Password:new1
 
 Password: lasuepehospital1
 
