@@ -13,8 +13,6 @@ Visit https://kukunya.netlify.app
 
 Login with ID: rafce12
 
-Password:lasuepehospital1
-
 Password: lasuepehospital1
 
 ## How It Works

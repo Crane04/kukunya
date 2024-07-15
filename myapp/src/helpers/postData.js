@@ -1,13 +1,19 @@
 // apiHelper.js
 import { base_url } from '../utils/constants';
 
-const postData = async (path, data) => {
+const postData = async (path, data, token = null) => {
   try {
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${base_url}${path}`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: headers,
       body: JSON.stringify(data),
     });
 

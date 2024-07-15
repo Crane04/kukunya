@@ -32,7 +32,8 @@ module.exports = { createIssue };
 // @route   GET /api/issues
 // @access  Private
 const getIssues = asyncHandler(async (req, res) => {
-  const issues = await Issue.find().populate('user', 'name email');
+  const user = req.user; // Get the authenticated user
+  const issues = await Issue.find({ user: user._id }).populate('user', 'name email'); // Filter issues by user ID
   res.json(issues);
 });
 

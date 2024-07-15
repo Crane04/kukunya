@@ -45,8 +45,8 @@ POST http://localhost:3000/auth/user/signin
 Content-Type: application/json
 
 {
-    "email": "mayowayusuf3004@gmail.com",
-    "password": "mayowa"
+    "email": "tumi@gmail.com",
+    "password": "tumi"
 }
 
 ###
@@ -56,8 +56,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGQ0ZmY0N
 ###
 POST  http://localhost:3000/issues
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGQ0ZmY0NjY5MmI2NDhmMzA3OTBiNyIsImlhdCI6MTcyMTA1MTk5OCwiZXhwIjoxNzIzNjQzOTk4fQ.7rv1n1wjTaVWEHCXip6CQcOLcy72uZTLkA0_-XJGJS4
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGQ0ZmY0NjY5MmI2NDhmMzA3OTBiNyIsImlhdCI6MTcyMTA3ODYzMSwiZXhwIjoxNzIzNjcwNjMxfQ.usD3J1kGOFxF66o4F-zGNZ3xWKf6gemqQPj4nOQgna4
 {
     "type": "station",
     "location": {
@@ -69,4 +68,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGQ0ZmY0N
 ###
 GET  http://localhost:3000/issues
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGQ0ZmY0NjY5MmI2NDhmMzA3OTBiNyIsImlhdCI6MTcyMTA1MTk5OCwiZXhwIjoxNzIzNjQzOTk4fQ.7rv1n1wjTaVWEHCXip6CQcOLcy72uZTLkA0_-XJGJS4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGRjMDUwNzg1MDI1NWUxZTRkN2FmMCIsImlhdCI6MTcyMTA3ODE1NiwiZXhwIjoxNzIzNjcwMTU2fQ.cKzC9GXFxA8XMvF1jxPUDTp2v-HZAPsKj80N775QnGY
+###
+POST https://main-website-backend-lm0y.onrender.com/user/login
+Content-Type: application/json
+
+{
+    "email": "supremo@gmail.com",
+    "password": "test26"
+}

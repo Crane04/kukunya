@@ -21,7 +21,7 @@ const LoginScreen = () => {
         console.log("Successful");
 
         // Save user details to AsyncStorage
-        await AsyncStorage.setItem('userDetails', JSON.stringify(response.user));
+        await AsyncStorage.setItem('userDetails', JSON.stringify(response));
 
         Alert.alert('Success', 'Sign In successful!', [{ text: 'OK', onPress: () => navigation.navigate('Tabs') }]);
       } else {

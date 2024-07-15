@@ -4,15 +4,15 @@ import Home from '../screens/Home';
 import Map from '../screens/Map';
 import Entypo from "@expo/vector-icons/Entypo";
 import { View, Text, StyleSheet } from 'react-native';
-// import TabsHeader from '../components/TabsHeader'; // Adjust the path as needed
 import { FontAwesome } from '@expo/vector-icons';
-const Tab = createBottomTabNavigator();
 
+const Tab = createBottomTabNavigator();
 
 const Tabs = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        headerShown: false, // Hide header for all tab screens
         tabBarActiveTintColor: "crimson",
         tabBarInactiveTintColor: "white",
         tabBarStyle: {

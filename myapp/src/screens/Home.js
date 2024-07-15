@@ -4,7 +4,7 @@ import useLocation from '../hooks/useLocation';
 import { base_url } from '../utils/constants';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import { useNavigation } from '@react-navigation/native';
 import postData from '../helpers/postData';
 
 const HomeScreen = () => {
@@ -15,7 +15,7 @@ const HomeScreen = () => {
   const [socket, setSocket] = useState(null);
   const [confirmationMessage, setConfirmationMessage] = useState('');
   const [userData, setUserData] = useState(null);
-  const navigation = useNavigation(); // Use navigation
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -76,11 +76,9 @@ const HomeScreen = () => {
     };
   }, []);
 
-  // Alarm function
   const Alarm = (type) => {
     if (socket && myLocation) {
-      const socketId = socket.id; // Get the socket ID
-      console.log(socketId);
+      const socketId = socket.id;
       
       Alert.alert(
         'Confirmation',
@@ -88,7 +86,6 @@ const HomeScreen = () => {
         [
           {
             text: 'Cancel',
-            onPress: () => console.log(`${type} alarm canceled`),
             style: 'cancel',
           },
           {
@@ -98,13 +95,18 @@ const HomeScreen = () => {
               
               try {
                 const response = await postData('/issues', {
-                  latitude: myLocation.latitude,
-                  longitude: myLocation.longitude,
+                  location: {
+                    latitude: myLocation.latitude,
+                    longitude: myLocation.longitude
+                  },
                   type: type,
                   user: socketId
-                });
+                }, userData?.token);
   
-                console.log('Issue created successfully:', response);
+                if(!response._id){                
+                  setConfirmationMessage('Failed to notify the authorities. Please try again.');
+                  return
+                }
   
                 // Emit the location data only if the issue is created successfully
                 socket.emit("sendLocation", {
@@ -172,7 +174,7 @@ const HomeScreen = () => {
         <Text>Getting Your Location...</Text>
       )}
 
-      <Text style={styles.loggedInText}>Logged in as: {userData.email}</Text>
+      <Text style={styles.loggedInText}>Logged in as: {userData?.user?.email}</Text>
 
       <TouchableOpacity style={styles.btn} onPress={() => { Alarm("station") }}>
         <Text style={styles.btnText}>Alarm Police</Text>
