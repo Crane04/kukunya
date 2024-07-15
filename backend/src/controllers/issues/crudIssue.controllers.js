@@ -4,21 +4,29 @@ const Issue = require('../../models/IssuesModel');
 // @desc    Create new issue
 // @route   POST /api/issues
 // @access  Private
-const createIssue = asyncHandler(async (req, res) => {
-  const { type, user, time, condition, description, location } = req.body;
 
+const createIssue = asyncHandler(async (req, res) => {
+  const { type,  location } = req.body;
+  console.log(req.user)
+
+  // Check for missing fields
+  if (!type  || !location) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  console.log(req.body);
   const issue = new Issue({
     type,
-    user,
-    time,
-    condition,
-    description,
-    location
+    user: req.user,
+    location,
   });
 
   const createdIssue = await issue.save();
   res.status(201).json(createdIssue);
 });
+
+module.exports = { createIssue };
+
 
 // @desc    Get all issues
 // @route   GET /api/issues

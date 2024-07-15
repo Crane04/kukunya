@@ -23,10 +23,7 @@ const issueSchema = new Schema({
     required: true,
     default: 'unattendedTo'
   },
-  description: {
-    type: String,
-    required: false
-  },
+
   location: {
     type: {
       latitude: {

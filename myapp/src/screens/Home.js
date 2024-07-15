@@ -5,6 +5,7 @@ import { base_url } from '../utils/constants';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import postData from '../helpers/postData';
 
 const HomeScreen = () => {
   const scrollText = useRef(new Animated.Value(0)).current;
@@ -75,10 +76,12 @@ const HomeScreen = () => {
     };
   }, []);
 
+  // Alarm function
   const Alarm = (type) => {
     if (socket && myLocation) {
       const socketId = socket.id; // Get the socket ID
-      console.log(socketId)
+      console.log(socketId);
+      
       Alert.alert(
         'Confirmation',
         `Are you sure you want to send a ${type} alarm?`,
@@ -90,19 +93,36 @@ const HomeScreen = () => {
           },
           {
             text: 'OK',
-            onPress: () => {
-              console.log(`Sending ${type} alarm with location:`, myLocation);
-              socket.emit("sendLocation", {
-                latitude: myLocation.latitude,
-                longitude: myLocation.longitude,
-                type: type,
-                user: socketId // Send the socket ID
-              });
-              setConfirmationMessage(
-                type === 'station'
-                  ? 'Nearest Police Station has been notified!'
-                  : 'Nearest Hospital has been notified!'
-              );
+            onPress: async () => {
+              console.log(`Attempting to create issue with location:`, myLocation);
+              
+              try {
+                const response = await postData('/issues', {
+                  latitude: myLocation.latitude,
+                  longitude: myLocation.longitude,
+                  type: type,
+                  user: socketId
+                });
+  
+                console.log('Issue created successfully:', response);
+  
+                // Emit the location data only if the issue is created successfully
+                socket.emit("sendLocation", {
+                  latitude: myLocation.latitude,
+                  longitude: myLocation.longitude,
+                  type: type,
+                  user: socketId // Send the socket ID
+                });
+  
+                setConfirmationMessage(
+                  type === 'station'
+                    ? 'Nearest Police Station has been notified!'
+                    : 'Nearest Hospital has been notified!'
+                );
+              } catch (error) {
+                console.error('Error creating issue:', error);
+                setConfirmationMessage('Failed to notify the authorities. Please try again.');
+              }
             },
           },
         ],
@@ -112,7 +132,7 @@ const HomeScreen = () => {
       console.log('Socket or location not available');
     }
   };
-
+  
   useEffect(() => {
     Animated.loop(
       Animated.timing(scrollText, {

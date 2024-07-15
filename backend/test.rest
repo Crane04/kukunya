@@ -52,3 +52,21 @@ Content-Type: application/json
 ###
 GET http://localhost:3000/auth/user/current
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGQ0ZmY0NjY5MmI2NDhmMzA3OTBiNyIsImlhdCI6MTcyMDUzNzc4OSwiZXhwIjoxNzIzMTI5Nzg5fQ.Ow5oDGAepv69_JuyFk0XYlNto7wgPl2qtuqkSMsSUGM
+
+###
+POST  http://localhost:3000/issues
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGQ0ZmY0NjY5MmI2NDhmMzA3OTBiNyIsImlhdCI6MTcyMTA1MTk5OCwiZXhwIjoxNzIzNjQzOTk4fQ.7rv1n1wjTaVWEHCXip6CQcOLcy72uZTLkA0_-XJGJS4
+
+{
+    "type": "station",
+    "location": {
+        "latitude": "10001",
+        "longitude": "100001"
+    }
+}
+
+###
+GET  http://localhost:3000/issues
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGQ0ZmY0NjY5MmI2NDhmMzA3OTBiNyIsImlhdCI6MTcyMTA1MTk5OCwiZXhwIjoxNzIzNjQzOTk4fQ.7rv1n1wjTaVWEHCXip6CQcOLcy72uZTLkA0_-XJGJS4

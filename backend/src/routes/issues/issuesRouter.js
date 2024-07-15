@@ -8,10 +8,11 @@ const {
   deleteIssue
 } = require('../../controllers/issues/crudIssue.controllers');
 const validateOrganization = require('../../middlewares/validateOrganizationToken'); // Assuming there's a middleware for authentication
+const validateUser = require("../../middlewares/validateUserToken")
 
 router.route('/')
-  .post(validateOrganization, createIssue)
-  .get(validateOrganization, getIssues);
+  .post(validateUser, createIssue)
+  .get(validateUser, getIssues);
 
 router.route('/:id')
   .get(validateOrganization, getIssueById)
