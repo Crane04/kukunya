@@ -4,9 +4,9 @@ const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
 
 const signUpOrganizations = asyncHandler(async (req, res) => {
-  const { name, location, type, customId, email, password } = req.body;
+  const { name, location, type, customId, email, password, latitude, longitude } = req.body;
 
-  if (!name || !location || !type || !customId || !email || !password) {
+  if (!name || !location || !type || !customId || !email || !password, !latitude, !longitude) {
     return res.status(400).json({
         message: 'All fields are required'
     });
@@ -33,7 +33,9 @@ const signUpOrganizations = asyncHandler(async (req, res) => {
     type, 
     customId, 
     email, 
-    password: hashedPassword
+    password: hashedPassword,
+    latitude,
+    longitude
   });
 
   await organization.save();

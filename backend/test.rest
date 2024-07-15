@@ -1,13 +1,15 @@
-POST https://kukunya.onrender.com/accts/signup
+POST http://localhost:3000/auth/organizations/signup
 Content-Type: application/json
 
 {
-    "name": "new1",
-    "location": "new1",
-    "type": "station",
-    "customId": "new1",
-    "email": "new1",
-    "password": "new1"
+    "name": "LASU EPE HOSPITAL",
+    "location": "LASU EPE",
+    "type": "hospital",
+    "customId": "rafce12",
+    "email": "lasuepehospital@gmail.com",
+    "password": "lasuepehospital1",
+    "latitude": "12345",
+    "longitude": "1234"
 }
 
 ###

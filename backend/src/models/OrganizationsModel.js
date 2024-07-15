@@ -26,12 +26,12 @@ const OrganizationSchema = new mongoose.Schema({
   latitude:{
     type: String,
     unique: true,
-    required: [true, "longitude is required"],
+    required: [true, "latitude is required"],
   },
   longitude: {
     type: String,
     unique: true,
-    required: [true, "latitude is required"],
+    required: [true, "longitude is required"],
   },
   email: {
     type: String,
