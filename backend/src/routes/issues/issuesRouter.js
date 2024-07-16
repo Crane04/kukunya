@@ -5,14 +5,19 @@ const {
   getIssues,
   getIssueById,
   updateIssue,
-  deleteIssue
+  deleteIssue,
+  getIssuesOrg
 } = require('../../controllers/issues/crudIssue.controllers');
 const validateOrganization = require('../../middlewares/validateOrganizationToken'); // Assuming there's a middleware for authentication
 const validateUser = require("../../middlewares/validateUserToken")
 
+
+
+router.get("/all", getIssuesOrg)
 router.route('/')
   .post(validateUser, createIssue)
   .get(validateUser, getIssues);
+
 
 router.route('/:id')
   .get(validateOrganization, getIssueById)

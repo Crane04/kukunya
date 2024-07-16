@@ -9,7 +9,7 @@ Download app at https://expo.dev/accounts/rahmayowa/projects/myapp/builds/5c1976
 
 ## To test Police/Hospital set up...
 
-Visit https://kukunya.netlify.app
+Visit https://kukunya.vercel.app
 
 Login with ID: rafce12
 

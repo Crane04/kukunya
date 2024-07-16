@@ -66,14 +66,5 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGQ0ZmY0N
 }
 
 ###
-GET  http://localhost:3000/issues
+GET  http://localhost:3000/issues/all
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGRjMDUwNzg1MDI1NWUxZTRkN2FmMCIsImlhdCI6MTcyMTA3ODE1NiwiZXhwIjoxNzIzNjcwMTU2fQ.cKzC9GXFxA8XMvF1jxPUDTp2v-HZAPsKj80N775QnGY
-###
-POST https://main-website-backend-lm0y.onrender.com/user/login
-Content-Type: application/json
-
-{
-    "email": "supremo@gmail.com",
-    "password": "test26"
-}

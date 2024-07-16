@@ -37,6 +37,11 @@ const getIssues = asyncHandler(async (req, res) => {
   res.json(issues);
 });
 
+const getIssuesOrg = asyncHandler(async (req, res) => {
+  const issues = await Issue.find({ condition: 'unattendedTo' }).populate('user', 'name email');
+  res.json(issues);
+});
+
 // @desc    Get single issue by ID
 // @route   GET /api/issues/:id
 // @access  Private
@@ -88,6 +93,7 @@ const deleteIssue = asyncHandler(async (req, res) => {
 module.exports = {
   createIssue,
   getIssues,
+  getIssuesOrg,
   getIssueById,
   updateIssue,
   deleteIssue
