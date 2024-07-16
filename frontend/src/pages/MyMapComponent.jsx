@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { GoogleMap, LoadScript, Marker, InfoWindow, TrafficLayer } from '@react-google-maps/api';
-import  { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 import io from 'socket.io-client';
 import getData from "../helpers/getData";
 
@@ -12,6 +12,8 @@ const MyMapComponent = () => {
   const [emergencyMarker, setEmergencyMarker] = useState(null);
   const [dangerLocations, setDangerLocations] = useState([]);
   const [organization, setOrganization] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,8 +22,7 @@ const MyMapComponent = () => {
         if (response.status === 401) {
           console.log(response.status);
           setOrganization(401);
-
-          return
+          return;
         }
         setOrganization(response);
       } catch (error) {
@@ -31,6 +32,37 @@ const MyMapComponent = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch('https://kukunya.onrender.com/issues/all'); // Adjust the endpoint as per your backend API
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        if (!Array.isArray(data)) {
+          throw new Error('Invalid data format');
+        }
+        // Filter issues within 0-5km range from currentLocation
+        const filteredIssues = data.filter(issue => {
+          console.log(currentLocation, issue.location)
+          const distance = calculateDistance(currentLocation, issue.location);
+          console.log(distance)
+          return distance >= 0 && distance <= 5;
+        });
+        setDangerLocations(filteredIssues); // Set filtered emergency issues in state
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError('Failed to fetch emergency issues');
+      } finally {
+        setLoading(false); // Set loading state to false when done
+      }
+    };
+
+    fetchData();
+  }, [currentLocation]);
 
   const socketRef = useRef(null);
 
@@ -45,8 +77,8 @@ const MyMapComponent = () => {
       console.log('Received location update:', data);
       // Update dangerLocations only if distance is within 0-5km
       const distance = calculateDistance(currentLocation, data.coordinates);
-      console.log(organization.organization.type, data.type)
-      if (distance >= 0 && distance <= 5 && organization.organization.type == data.type) {
+      console.log(organization.organization.type, data.type);
+      if (distance >= 0 && distance <= 5 && organization.organization.type === data.type) {
         setDangerLocations((prevLocations) => [...prevLocations, { ...data, distance }]);
       }
     });
@@ -67,9 +99,8 @@ const MyMapComponent = () => {
 
   const handleLogout = () => {
     // Add your logout logic here
-    localStorage.clear()
+    localStorage.clear();
     window.location.href = '/login';
-
   };
 
   const handleEmergencyClick = (emergency) => {
@@ -106,12 +137,10 @@ const MyMapComponent = () => {
 
   if (!organization) {
     return <p>Loading...</p>;
-  }
-  else if (organization == 401) {
-    {console.log(23)}
-    return <p>Unauthorized, <Link to = {"/login"}>please login</Link> </p>;
-  }
-  else return (
+  } else if (organization === 401) {
+    { console.log(23) }
+    return <p>Unauthorized, <Link to="/login">please login</Link> </p>;
+  } else return (
     <LoadScript googleMapsApiKey="AIzaSyAIZAHqq0Gpw0yNcq6LgsQd9EAGpee5sMg">
       <div style={styles.container}>
         <header style={styles.header}>
@@ -181,12 +210,14 @@ const MyMapComponent = () => {
               >
                 <div style={styles.emergencyHeader}>
                   <span>Emergency</span>
-                  <span>{location.distance} km away</span>
+                  <span>{calculateDistance(currentLocation, location.location)} km away</span>
+                  <span>Time: {location.time}</span>
+                  <span>Condition: {location.condition}</span>
                 </div>
                 {selectedEmergency && selectedEmergency.id === location.id && (
                   <div style={styles.emergencyDetails}>
-                    <p>Latitude: {location.coordinates.latitude}</p>
-                    <p>Longitude: {location.coordinates.longitude}</p>
+                    <p>Latitude: {location.location.latitude}</p>
+                    <p>Longitude: {location.location.longitude}</p>
                     <button
                       style={styles.showInMapButton}
                       onClick={() => handleShowInMapClick(location)}
@@ -282,6 +313,7 @@ const styles = {
   emergencyHeader: {
     display: 'flex',
     justifyContent: 'space-between',
+    flexDirection: "column"
   },
   emergencyDetails: {
     marginTop: '10px',

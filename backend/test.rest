@@ -66,5 +66,5 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGQ0ZmY0N
 }
 
 ###
-GET  http://localhost:3000/issues/all
+GET  https://kukunya.onrender.com/issues/all
 Content-Type: application/json
