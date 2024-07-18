@@ -315,8 +315,6 @@ const styles = {
     background: '#fff',
     cursor: 'pointer',
     border: '1px solid #ccc',
-    display: "flex",
-    flexDirection: "column-reverse"
   },
   emergencyHeader: {
     display: 'flex',

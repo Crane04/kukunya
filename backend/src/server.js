@@ -50,25 +50,26 @@ mongoose.connect(db_url)
         console.log(error);
     });
 
-// Socket.io setup
-io.on('connection', (socket) => {
-    console.log('New client connected');
 
-    socket.on('sendLocation', (data) => {
-        const { latitude, longitude, type, user} = data;
-        const time = Date
-        socket.broadcast.emit('locationUpdate', { location: { latitude, longitude }, type, user, time });
+    io.on('connection', (socket) => {
+        console.log('New client connected');
+    
+        socket.on('sendLocation', (data) => {
+            const { latitude, longitude, type, user } = data;
+            const time = Date.now(); // Ensure you are using the correct time format
+            socket.broadcast.emit('locationUpdate', { location: { latitude, longitude }, type, user, time });
+        });
+    
+        // Handling the respondToEmergency event
+        socket.on('respondToEmergency', (data) => {
+            console.log(`Received response to emergency: ${data.emergencyId}`);
+    
+            // Broadcasting to all clients that help is on the way
+            io.emit('helpOnTheWay', { emergencyId: data.emergencyId });
+        });
+    
+        socket.on('disconnect', () => {
+            console.log('Client disconnected');
+        });
     });
-
-    // Handling the respondToEmergency event
-    socket.on('respondToEmergency', (data) => {
-        console.log(`Received response to emergency: ${data.emergencyId}`);
-
-        // Broadcasting to all clients that help is on the way
-        socket.emit('helpOnTheWay', { emergencyId: data.emergencyId });
-    });
-
-    socket.on('disconnect', () => {
-        console.log('Client disconnected');
-    });
-});
+    

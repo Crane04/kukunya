@@ -58,7 +58,8 @@ const Home = ({ navigation }) => {
             console.error('Error connecting to Socket.IO server:', error);
         });
 
-        socketInstance.on('helpOnTheWay', () => {
+        socketInstance.on('helpOnTheWay', (data) => {
+            console.log(data)
             Alert.alert("Found Help",'Help is coming!');
         });
 
