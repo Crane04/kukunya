@@ -59,7 +59,8 @@ const Home = ({ navigation }) => {
         });
 
         socketInstance.on('helpOnTheWay', (data) => {
-            console.log(data)
+            console.log(userData)
+            if(data["emergencyId"]["email"] !== userData?.user?.email) return
             Alert.alert("Found Help",'Help is coming!');
         });
 

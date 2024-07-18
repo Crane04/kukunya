@@ -6,17 +6,20 @@ const {
   getIssueById,
   updateIssue,
   deleteIssue,
-  getIssuesOrg
+  deleteAllIssues,
+  getIssuesOrg,
+  attendToIssue
 } = require('../../controllers/issues/crudIssue.controllers');
 const validateOrganization = require('../../middlewares/validateOrganizationToken'); // Assuming there's a middleware for authentication
 const validateUser = require("../../middlewares/validateUserToken")
 
 
-
 router.get("/all", getIssuesOrg)
+router.put("/attend/:id", attendToIssue)
 router.route('/')
   .post(validateUser, createIssue)
-  .get(validateUser, getIssues);
+  .get(validateUser, getIssues)
+  .delete( deleteAllIssues); // Add the delete route here
 
 
 router.route('/:id')

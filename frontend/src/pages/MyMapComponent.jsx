@@ -3,12 +3,13 @@ import { GoogleMap, LoadScript, Marker, InfoWindow, TrafficLayer } from '@react-
 import { Link } from "react-router-dom";
 import io from 'socket.io-client';
 import getData from "../helpers/getData";
+import {base_url} from "../utils/constants"
 
 const MyMapComponent = () => {
   const [currentLocation, setCurrentLocation] = useState({ lat: 6.5868, lng: 3.9949 }); // Default location
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [showTraffic, setShowTraffic] = useState(true);
-  const [selectedEmergency, setSelectedEmergency] = useState(null);
+  const [selectedEmergencyId, setSelectedEmergencyId] = useState(null);
   const [emergencyMarker, setEmergencyMarker] = useState(null);
   const [dangerLocations, setDangerLocations] = useState([]);
   const [organization, setOrganization] = useState(null);
@@ -103,7 +104,7 @@ const MyMapComponent = () => {
   };
 
   const handleEmergencyClick = (emergency) => {
-    setSelectedEmergency(emergency);
+    setSelectedEmergencyId(emergency._id === selectedEmergencyId ? null : emergency._id);
   };
 
   const handleResponseClick = (emergency) => {
@@ -114,7 +115,6 @@ const MyMapComponent = () => {
   };
 
   const handleShowInMapClick = (location) => {
-    
     const { latitude, longitude } = location.location || {};
     console.log("latitude:", location.location)
     if (latitude && longitude) {
@@ -217,7 +217,7 @@ const MyMapComponent = () => {
                   <span>Time: {new Date(location.time).toLocaleString() !== "Invalid Date" ? new Date(location.time).toLocaleString() : "Just Now"}</span>
                   <span>Condition: {location.condition}</span>
                 </div>
-                {selectedEmergency && selectedEmergency.id === location.id && (
+                {selectedEmergencyId === location._id && (
                   <div style={styles.emergencyDetails}>
                     <p>Latitude: {location?.location?.latitude}</p>
                     <p>Longitude: {location?.location?.longitude}</p>

@@ -14,7 +14,6 @@ const createIssue = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  console.log(req.body);
   const issue = new Issue({
     type,
     user: req.user,
@@ -90,11 +89,33 @@ const deleteIssue = asyncHandler(async (req, res) => {
   }
 });
 
+const deleteAllIssues = asyncHandler(async (req, res) => {
+  await Issue.deleteMany({});
+  res.json({ message: 'All issues removed' });
+});
+
+const attendToIssue = asyncHandler(async (req, res) => {
+  const issue = await Issue.findById(req.params.id);
+
+  if (issue) {
+    if (issue.condition === 'unattendedTo') {
+      issue.condition = 'attendedTo';
+      const updatedIssue = await issue.save();
+      res.json(updatedIssue);
+    } else {
+      res.status(400).json({ message: 'Issue is not in unattendedTo condition' });
+    }
+  } else {
+    res.status(404).json({ message: 'Issue not found' });
+  }
+});
 module.exports = {
   createIssue,
   getIssues,
   getIssuesOrg,
   getIssueById,
   updateIssue,
-  deleteIssue
+  deleteIssue,
+  deleteAllIssues,
+  attendToIssue
 };

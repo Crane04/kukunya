@@ -66,5 +66,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGQ0ZmY0N
 }
 
 ###
-GET  https://kukunya.onrender.com/issues/all
+
+
+DELETE http://localhost:3000/issues/
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGNmYmEyMDkyMjZhOWQ5ZDYxMzVhZSIsImlhdCI6MTcyMTMyMzc5NSwiZXhwIjoxNzIzOTE1Nzk1fQ.xYUMAku_pQ7WEH4nYAOJiqhTyl3J0HaW_QK9Ck6Ouek
