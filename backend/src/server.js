@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
 
     socket.on('sendLocation', (data) => {
         const { latitude, longitude, type, user,  } = data;
-        const time = new Date.now
+        const time = Date
         socket.broadcast.emit('locationUpdate', { location: { latitude, longitude }, type, user, time });
     });
 
