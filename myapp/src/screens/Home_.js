@@ -100,7 +100,6 @@ const Home = ({ navigation }) => {
                         longitude: myLocation.longitude
                       },
                       type: type,
-                      user: socketId
                     }, userData?.token);
       
                     if(!response._id){                
@@ -113,7 +112,7 @@ const Home = ({ navigation }) => {
                       latitude: myLocation.latitude,
                       longitude: myLocation.longitude,
                       type: type,
-                      user: socketId // Send the socket ID
+                      user: userData.user // Send the socket ID
                     });
                     {
                         type === 'station' ?

@@ -42,6 +42,7 @@ const MyMapComponent = () => {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
+        console.log(data)
         if (!Array.isArray(data)) {
           throw new Error('Invalid data format');
         }
@@ -77,7 +78,7 @@ const MyMapComponent = () => {
       const distance = calculateDistance(currentLocation, data.coordinates);
       console.log(organization.organization.type, data.type);
       if (distance >= 0 && distance <= 5 && organization.organization.type === data.type) {
-        setDangerLocations((prevLocations) => [...prevLocations, { ...data, distance }]);
+        setDangerLocations((prevLocations) => [...prevLocations, { ...data, distance, condition: "unattendedTo", date: new Date() }]);
       }
     });
 
@@ -106,6 +107,7 @@ const MyMapComponent = () => {
   };
 
   const handleResponseClick = (emergency) => {
+    console.log(emergency)
     if (socketRef.current) {
       socketRef.current.emit("respondToEmergency", { emergencyId: emergency.user });
     }
@@ -212,7 +214,7 @@ const MyMapComponent = () => {
                 <div style={styles.emergencyHeader}>
                   <span>Emergency</span>
                   <span>{calculateDistance(currentLocation, location.location)} km away</span>
-                  <span>Time: {new Date(location.time).toLocaleString()}</span>
+                  <span>Time: {new Date(location.time).toLocaleString() !== "Invalid Date" ? new Date(location.time).toLocaleString() : "Just Now"}</span>
                   <span>Condition: {location.condition}</span>
                 </div>
                 {selectedEmergency && selectedEmergency.id === location.id && (
@@ -248,6 +250,7 @@ const styles = {
     flexDirection: 'column',
     height: '100vh',
     width: '100%',
+    overflow: "hidden"
   },
   header: {
     display: 'flex',
@@ -303,6 +306,8 @@ const styles = {
     padding: '10px',
     boxSizing: 'border-box',
     overflowY: 'auto',
+    height: "90vh",
+    marginBottom: "20px"
   },
   emergencyItem: {
     padding: '10px',

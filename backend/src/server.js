@@ -55,7 +55,7 @@ io.on('connection', (socket) => {
     console.log('New client connected');
 
     socket.on('sendLocation', (data) => {
-        const { latitude, longitude, type, user,  } = data;
+        const { latitude, longitude, type, user} = data;
         const time = Date
         socket.broadcast.emit('locationUpdate', { location: { latitude, longitude }, type, user, time });
     });
@@ -65,7 +65,7 @@ io.on('connection', (socket) => {
         console.log(`Received response to emergency: ${data.emergencyId}`);
 
         // Broadcasting to all clients that help is on the way
-        socket.to(data.emergencyId).emit('helpOnTheWay', { emergencyId: data.emergencyId });
+        socket.emit('helpOnTheWay', { emergencyId: data.emergencyId });
     });
 
     socket.on('disconnect', () => {
