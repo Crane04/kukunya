@@ -47,9 +47,7 @@ const MyMapComponent = () => {
         }
         // Filter issues within 0-5km range from currentLocation
         const filteredIssues = data.filter(issue => {
-          console.log(currentLocation, issue.location)
           const distance = calculateDistance(currentLocation, issue.location);
-          console.log(distance)
           return distance >= 0 && distance <= 5;
         });
         setDangerLocations(filteredIssues); // Set filtered emergency issues in state
@@ -108,19 +106,22 @@ const MyMapComponent = () => {
   };
 
   const handleResponseClick = (emergency) => {
-    console.log(emergency);
     if (socketRef.current) {
       socketRef.current.emit("respondToEmergency", { emergencyId: emergency.user });
     }
   };
 
   const handleShowInMapClick = (location) => {
-    console.log(location);
-    const { latitude, longitude } = location.coordinates;
-    setEmergencyMarker({ name: location.name, ...{ lat: latitude, lng: longitude } });
+    
+    const { latitude, longitude } = location.location || {};
+    console.log("latitude:", location.location)
+    if (latitude && longitude) {
+      setEmergencyMarker({ name: location.name, ...{ lat: latitude, lng: longitude } });
+    }
   };
 
   const calculateDistance = (location1, location2) => {
+    if (!location2 || !location2.latitude || !location2.longitude) return 0;
     const R = 6371; // Radius of the Earth in km
     const dLat = ((location2.latitude - location1.lat) * Math.PI) / 180;
     const dLng = ((location2.longitude - location1.lng) * Math.PI) / 180;
@@ -211,13 +212,13 @@ const MyMapComponent = () => {
                 <div style={styles.emergencyHeader}>
                   <span>Emergency</span>
                   <span>{calculateDistance(currentLocation, location.location)} km away</span>
-                  <span>Time: {location.time}</span>
+                  <span>Time: {new Date(location.time).toLocaleString()}</span>
                   <span>Condition: {location.condition}</span>
                 </div>
                 {selectedEmergency && selectedEmergency.id === location.id && (
                   <div style={styles.emergencyDetails}>
-                    <p>Latitude: {location.location.latitude}</p>
-                    <p>Longitude: {location.location.longitude}</p>
+                    <p>Latitude: {location?.location?.latitude}</p>
+                    <p>Longitude: {location?.location?.longitude}</p>
                     <button
                       style={styles.showInMapButton}
                       onClick={() => handleShowInMapClick(location)}
@@ -309,6 +310,8 @@ const styles = {
     background: '#fff',
     cursor: 'pointer',
     border: '1px solid #ccc',
+    display: "flex",
+    flexDirection: "column-reverse"
   },
   emergencyHeader: {
     display: 'flex',

@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Home from '../screens/Home';
+import Home from '../screens/Home_';
 import Map from '../screens/Map';
 import Issues from '../screens/Issues';
 import Entypo from "@expo/vector-icons/Entypo";

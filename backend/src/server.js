@@ -55,10 +55,9 @@ io.on('connection', (socket) => {
     console.log('New client connected');
 
     socket.on('sendLocation', (data) => {
-        const { latitude, longitude, type, user } = data;
-        console.log(`Received location: ${latitude}, ${longitude}`);
-
-        socket.broadcast.emit('locationUpdate', { coordinates: { latitude, longitude }, type, user });
+        const { latitude, longitude, type, user,  } = data;
+        const time = new Date.now
+        socket.broadcast.emit('locationUpdate', { location: { latitude, longitude }, type, user, time });
     });
 
     // Handling the respondToEmergency event
