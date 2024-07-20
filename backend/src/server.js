@@ -55,16 +55,14 @@ mongoose.connect(db_url)
         console.log('New client connected');
     
         socket.on('sendLocation', (data) => {
-            const { latitude, longitude, type, user } = data;
-            const time = Date.now(); // Ensure you are using the correct time format
-            socket.broadcast.emit('locationUpdate', { location: { latitude, longitude }, type, user, time });
+            const { latitude, longitude, type, user, e_type } = data;
+            const time = Date.now();
+            socket.broadcast.emit('locationUpdate', { location: { latitude, longitude }, type, user, time, e_type });
         });
     
-        // Handling the respondToEmergency event
         socket.on('respondToEmergency', (data) => {
             console.log(`Received response to emergency: ${data.emergencyId}`);
     
-            // Broadcasting to all clients that help is on the way
             io.emit('helpOnTheWay', { emergencyId: data.emergencyId });
         });
     

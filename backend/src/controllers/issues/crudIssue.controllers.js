@@ -1,13 +1,8 @@
 const asyncHandler = require('express-async-handler');
 const Issue = require('../../models/IssuesModel');
 
-// @desc    Create new issue
-// @route   POST /api/issues
-// @access  Private
-
 const createIssue = asyncHandler(async (req, res) => {
-  const { type,  location } = req.body;
-  console.log(req.user)
+  const { type,  location, e_type } = req.body;
 
   // Check for missing fields
   if (!type  || !location) {
@@ -18,6 +13,7 @@ const createIssue = asyncHandler(async (req, res) => {
     type,
     user: req.user,
     location,
+    e_type
   });
 
   const createdIssue = await issue.save();

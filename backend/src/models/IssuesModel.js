@@ -36,6 +36,10 @@ const issueSchema = new Schema({
       }
     },
     required: true
+  },
+  e_type: {
+    type: String,
+    required: [true, "Emergency Type must be available!"]
   }
 }, {
   timestamps: true // Automatically add createdAt and updatedAt fields

@@ -5,6 +5,7 @@ import useLocation from '../hooks/useLocation';
 import { base_url } from '../utils/constants';
 import io from 'socket.io-client';
 import postData from '../helpers/postData';
+import FastImage from "expo-fast-image"
 
 const Home = ({ navigation }) => {
     const [userData, setUserData] = useState(null);
@@ -78,67 +79,253 @@ const Home = ({ navigation }) => {
 
     const isLoading = loading || locationLoading;
 
-    const Alarm = (type) => {
-        if (socket && myLocation) {
-          const socketId = socket.id;
-          
-          Alert.alert(
-            'Confirmation',
-            `You will be arrested if you send a false alarm to the ${type}.`,
-            [
-              {
-                text: 'Cancel',
-                style: 'cancel',
-              },
-              {
-                text: 'OK',
-                onPress: async () => {
-                  console.log(`Attempting to create issue with location:`, myLocation);
-                  
-                  try {
-                    const response = await postData('/issues', {
-                      location: {
-                        latitude: myLocation.latitude,
-                        longitude: myLocation.longitude
-                      },
-                      type: type,
-                    }, userData?.token);
-      
-                    if(!response._id){                
-                      Alert.alert("Error",'Failed to notify the authorities. Please try again.');
-                      return
-                    }
-      
-                    // Emit the location data only if the issue is created successfully
-                    socket.emit("sendLocation", {
-                      latitude: myLocation.latitude,
-                      longitude: myLocation.longitude,
-                      type: type,
-                      user: userData.user // Send the socket ID
-                    });
-                    {
-                        type === 'station' ?
-                        Alert.alert(
-                              "Success", 'Nearest Police Station has been notified!'
-                        ):
-                        Alert.alert(
-                            "Success", 'Nearest Hospital has been notified!'
-                        )
-                    }
+const Alarm = (type) => {
+    if (socket && myLocation) {
+        const socketId = socket.id;
 
-                  } catch (error) {
-                    console.error('Error creating issue:', error);
-                    Alert.alert("Error",'Failed to notify the authorities. Please try again.');
-                  }
-                },
-              },
-            ],
-            { cancelable: false }
-          );
+        if (type === 'hospital') {
+            Alert.alert(
+                'Confirmation',
+                'Is it a road accident?',
+                [
+                    {
+                        text: 'No',
+                        onPress: async () => {
+                            try {
+                                const response = await postData('/issues', {
+                                    location: {
+                                        latitude: myLocation.latitude,
+                                        longitude: myLocation.longitude
+                                    },
+                                    type: type,
+                                    e_type: 'non-accident'
+                                }, userData?.token);
+
+                                if (!response._id) {
+                                    Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
+                                    return;
+                                }
+
+                                socket.emit("sendLocation", {
+                                    latitude: myLocation.latitude,
+                                    longitude: myLocation.longitude,
+                                    type: type,
+                                    e_type: 'non-accident',
+                                    user: userData.user
+                                });
+
+                                Alert.alert("Success", 'Nearest Hospital has been notified!');
+                            } catch (error) {
+                                console.error('Error creating issue:', error);
+                                Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
+                            }
+                        },
+                    },
+                    {
+                        text: 'Yes',
+                        onPress: () => {
+                            Alert.alert(
+                                'Confirmation',
+                                'Are the injuries severe?',
+                                [
+                                    {
+                                        text: 'No',
+                                        onPress: async () => {
+                                            try {
+                                                const response = await postData('/issues', {
+                                                    location: {
+                                                        latitude: myLocation.latitude,
+                                                        longitude: myLocation.longitude
+                                                    },
+                                                    type: type,
+                                                    e_type: 'minor-accident'
+                                                }, userData?.token);
+
+                                                if (!response._id) {
+                                                    Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
+                                                    return;
+                                                }
+
+                                                socket.emit("sendLocation", {
+                                                    latitude: myLocation.latitude,
+                                                    longitude: myLocation.longitude,
+                                                    type: type,
+                                                    e_type: 'minor-accident',
+                                                    user: userData.user
+                                                });
+
+                                                Alert.alert("Success", 'Nearest Hospital has been notified for non-severe injuries!');
+                                            } catch (error) {
+                                                console.error('Error creating issue:', error);
+                                                Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
+                                            }
+                                        },
+                                    },
+                                    {
+                                        text: 'Yes',
+                                        onPress: async () => {
+                                            try {
+                                                const response = await postData('/issues', {
+                                                    location: {
+                                                        latitude: myLocation.latitude,
+                                                        longitude: myLocation.longitude
+                                                    },
+                                                    type: type,
+                                                    e_type: 'severe-accident'
+                                                }, userData?.token);
+
+                                                if (!response._id) {
+                                                    Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
+                                                    return;
+                                                }
+
+                                                socket.emit("sendLocation", {
+                                                    latitude: myLocation.latitude,
+                                                    longitude: myLocation.longitude,
+                                                    type: type,
+                                                    e_type: 'severe-accident',
+                                                    user: userData.user
+                                                });
+
+                                                Alert.alert("Success", 'Nearest Hospital has been notified for severe injuries!');
+                                            } catch (error) {
+                                                console.error('Error creating issue:', error);
+                                                Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
+                                            }
+                                        },
+                                    },
+                                ],
+                                { cancelable: false }
+                            );
+                        },
+                    },
+                ],
+                { cancelable: false }
+            );
+        } else if (type === 'station') {
+            Alert.alert(
+                'Confirmation',
+                'Is it a theft?',
+                [
+                    {
+                        text: 'No',
+                        onPress: async () => {
+                            try {
+                                const response = await postData('/issues', {
+                                    location: {
+                                        latitude: myLocation.latitude,
+                                        longitude: myLocation.longitude
+                                    },
+                                    type: type,
+                                    e_type: 'non-theft'
+                                }, userData?.token);
+
+                                if (!response._id) {
+                                    Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
+                                    return;
+                                }
+
+                                socket.emit("sendLocation", {
+                                    latitude: myLocation.latitude,
+                                    longitude: myLocation.longitude,
+                                    type: type,
+                                    e_type: 'non-theft',
+                                    user: userData.user
+                                });
+
+                                Alert.alert("Success", 'Nearest Police Station has been notified!');
+                            } catch (error) {
+                                console.error('Error creating issue:', error);
+                                Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
+                            }
+                        },
+                    },
+                    {
+                        text: 'Yes',
+                        onPress: () => {
+                            Alert.alert(
+                                'Confirmation',
+                                'Is the suspect armed?',
+                                [
+                                    {
+                                        text: 'No',
+                                        onPress: async () => {
+                                            try {
+                                                const response = await postData('/issues', {
+                                                    location: {
+                                                        latitude: myLocation.latitude,
+                                                        longitude: myLocation.longitude
+                                                    },
+                                                    type: type,
+                                                    e_type: 'unarmed-theft'
+                                                }, userData?.token);
+
+                                                if (!response._id) {
+                                                    Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
+                                                    return;
+                                                }
+
+                                                socket.emit("sendLocation", {
+                                                    latitude: myLocation.latitude,
+                                                    longitude: myLocation.longitude,
+                                                    type: type,
+                                                    e_type: 'unarmed-theft',
+                                                    user: userData.user
+                                                });
+
+                                                Alert.alert("Success", 'Nearest Police Station has been notified for unarmed suspect!');
+                                            } catch (error) {
+                                                console.error('Error creating issue:', error);
+                                                Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
+                                            }
+                                        },
+                                    },
+                                    {
+                                        text: 'Yes',
+                                        onPress: async () => {
+                                            try {
+                                                const response = await postData('/issues', {
+                                                    location: {
+                                                        latitude: myLocation.latitude,
+                                                        longitude: myLocation.longitude
+                                                    },
+                                                    type: type,
+                                                    e_type: 'armed-theft'
+                                                }, userData?.token);
+
+                                                if (!response._id) {
+                                                    Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
+                                                    return;
+                                                }
+
+                                                socket.emit("sendLocation", {
+                                                    latitude: myLocation.latitude,
+                                                    longitude: myLocation.longitude,
+                                                    type: type,
+                                                    e_type: 'armed-theft',
+                                                    user: userData.user
+                                                });
+
+                                                Alert.alert("Success", 'Nearest Police Station has been notified for armed suspect!');
+                                            } catch (error) {
+                                                console.error('Error creating issue:', error);
+                                                Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
+                                            }
+                                        },
+                                    },
+                                ],
+                                { cancelable: false }
+                            );
+                        },
+                    },
+                ],
+                { cancelable: false }
+            );
         } else {
-            Alert.alert("Error",'Couldn\'t get your location');
+            Alert.alert("Error", 'Couldn\'t get your location');
         }
-      };
+    }
+};
     
 
     return (
@@ -148,7 +335,7 @@ const Home = ({ navigation }) => {
             ) : (
                 <View style={styles.innerContainer}>
                     <View style={styles.up}>
-                        <Image
+                        <FastImage
                             source={require("../../assets/police.jpeg")}
                             style={styles.police}
                         />
@@ -161,7 +348,7 @@ const Home = ({ navigation }) => {
 
                     <View style={styles.down}>
                         <View style={styles.downLeft}>
-                            <Image
+                            <FastImage
                                 source={require("../../assets/hospital.jpeg")}
                                 style={styles.police}
                             />
@@ -173,7 +360,7 @@ const Home = ({ navigation }) => {
                         </View>
 
                         <View style={styles.downLeft}>
-                            <Image
+                            <FastImage
                                 source={require("../../assets/write.jpeg")}
                                 style={styles.police}
                             />
@@ -242,10 +429,12 @@ const styles = StyleSheet.create({
         padding: 10,
         alignItems: "center",
         borderRadius: 5,
-        width: "70%",
+        width: "70%"
     },
     btnText: {
-        color: "#fff"
+        color: "#fff",
+        justifyContent: "center",
+        textAlign: "center"
     },
     locationContainer: {
         marginTop: 20,
