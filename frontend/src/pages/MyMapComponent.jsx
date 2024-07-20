@@ -212,7 +212,7 @@ const MyMapComponent = () => {
                 onClick={() => handleEmergencyClick(location)}
               >
                 <div style={styles.emergencyHeader}>
-                  <span>Emergency</span>
+                  <span style = {{fontWeight: "bold" }}>{ location.e_type }</span>
                   <span>{calculateDistance(currentLocation, location.location)} km away</span>
                   <span>Time: {new Date(location.time).toLocaleString() !== "Invalid Date" ? new Date(location.time).toLocaleString() : "Just Now"}</span>
                   <span>Condition: {location.condition}</span>

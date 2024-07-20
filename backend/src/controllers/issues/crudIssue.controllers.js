@@ -29,7 +29,7 @@ module.exports = { createIssue };
 const getIssues = asyncHandler(async (req, res) => {
   const user = req.user; // Get the authenticated user
   const issues = await Issue.find({ user: user._id }).populate('user', 'name email'); // Filter issues by user ID
-  res.json(issues);
+  res.json(issues.reverse());
 });
 
 const getIssuesOrg = asyncHandler(async (req, res) => {

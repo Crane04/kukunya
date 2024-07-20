@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import ModalDropdown from 'react-native-modal-dropdown';
 import { getUser } from "../utils/getUser";
 import useLocation from '../hooks/useLocation';
 import { base_url } from '../utils/constants';
 import io from 'socket.io-client';
 import postData from '../helpers/postData';
-import FastImage from "expo-fast-image"
+import FastImage from "expo-fast-image";
 
 const Home = ({ navigation }) => {
     const [userData, setUserData] = useState(null);
     const [socket, setSocket] = useState(null);
     const [loading, setLoading] = useState(true);
     const [locationLoading, setLocationLoading] = useState(true);
+    const [dropdownVisible, setDropdownVisible] = useState(false);
+    const [dropdownOptions, setDropdownOptions] = useState([]);
+    const [selectedType, setSelectedType] = useState('');
     const { location: myLocation, error } = useLocation();
 
     useEffect(() => {
@@ -60,9 +64,8 @@ const Home = ({ navigation }) => {
         });
 
         socketInstance.on('helpOnTheWay', (data) => {
-            console.log(userData)
-            if(data["emergencyId"]["email"] !== userData?.user?.email) return
-            Alert.alert("Found Help",'Help is coming!');
+            if(data["emergencyId"]["email"] !== userData?.user?.email) return;
+            Alert.alert("Found Help", 'Help is coming!');
         });
 
         return () => {
@@ -79,18 +82,36 @@ const Home = ({ navigation }) => {
 
     const isLoading = loading || locationLoading;
 
-const Alarm = (type) => {
-    if (socket && myLocation) {
-        const socketId = socket.id;
+    const handleAlarmPress = (type) => {
+        setSelectedType(type);
+        if (type === 'station') {
+            setDropdownOptions(['Theft', 'Armed Robbery', 'Rape', 'Domestic Violence', 'Kidnap']);
+        } else if (type === 'hospital') {
+            setDropdownOptions(['Road Accident', 'Pregnancy', 'Heart Attack', 'Severe Injury', 'Other']);
+        }
+        setDropdownVisible(true);
+    };
 
-        if (type === 'hospital') {
+    const handleOptionSelect = (index, value) => {
+        setDropdownVisible(false);
+        sendAlarm(selectedType, value);
+    };
+
+    const sendAlarm = (type, e_type) => {
+        if (socket && myLocation) {
             Alert.alert(
                 'Confirmation',
-                'Is it a road accident?',
+                `You will be arrested if you send a false alarm to the ${type}.`,
                 [
                     {
-                        text: 'No',
+                        text: 'Cancel',
+                        style: 'cancel',
+                    },
+                    {
+                        text: 'OK',
                         onPress: async () => {
+                            console.log(`Attempting to create issue with location:`, myLocation);
+                            
                             try {
                                 const response = await postData('/issues', {
                                     location: {
@@ -98,224 +119,32 @@ const Alarm = (type) => {
                                         longitude: myLocation.longitude
                                     },
                                     type: type,
-                                    e_type: 'non-accident'
+                                    e_type: e_type
                                 }, userData?.token);
-
-                                if (!response._id) {
+                
+                                if (!response._id) {                
                                     Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
                                     return;
                                 }
-
+                
+                                // Emit the location data only if the issue is created successfully
                                 socket.emit("sendLocation", {
                                     latitude: myLocation.latitude,
                                     longitude: myLocation.longitude,
                                     type: type,
-                                    e_type: 'non-accident',
-                                    user: userData.user
+                                    e_type: e_type,
+                                    user: userData.user // Send the socket ID
                                 });
-
-                                Alert.alert("Success", 'Nearest Hospital has been notified!');
-                            } catch (error) {
-                                console.error('Error creating issue:', error);
-                                Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
-                            }
-                        },
-                    },
-                    {
-                        text: 'Yes',
-                        onPress: () => {
-                            Alert.alert(
-                                'Confirmation',
-                                'Are the injuries severe?',
-                                [
-                                    {
-                                        text: 'No',
-                                        onPress: async () => {
-                                            try {
-                                                const response = await postData('/issues', {
-                                                    location: {
-                                                        latitude: myLocation.latitude,
-                                                        longitude: myLocation.longitude
-                                                    },
-                                                    type: type,
-                                                    e_type: 'minor-accident'
-                                                }, userData?.token);
-
-                                                if (!response._id) {
-                                                    Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
-                                                    return;
-                                                }
-
-                                                socket.emit("sendLocation", {
-                                                    latitude: myLocation.latitude,
-                                                    longitude: myLocation.longitude,
-                                                    type: type,
-                                                    e_type: 'minor-accident',
-                                                    user: userData.user
-                                                });
-
-                                                Alert.alert("Success", 'Nearest Hospital has been notified for non-severe injuries!');
-                                            } catch (error) {
-                                                console.error('Error creating issue:', error);
-                                                Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
-                                            }
-                                        },
-                                    },
-                                    {
-                                        text: 'Yes',
-                                        onPress: async () => {
-                                            try {
-                                                const response = await postData('/issues', {
-                                                    location: {
-                                                        latitude: myLocation.latitude,
-                                                        longitude: myLocation.longitude
-                                                    },
-                                                    type: type,
-                                                    e_type: 'severe-accident'
-                                                }, userData?.token);
-
-                                                if (!response._id) {
-                                                    Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
-                                                    return;
-                                                }
-
-                                                socket.emit("sendLocation", {
-                                                    latitude: myLocation.latitude,
-                                                    longitude: myLocation.longitude,
-                                                    type: type,
-                                                    e_type: 'severe-accident',
-                                                    user: userData.user
-                                                });
-
-                                                Alert.alert("Success", 'Nearest Hospital has been notified for severe injuries!');
-                                            } catch (error) {
-                                                console.error('Error creating issue:', error);
-                                                Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
-                                            }
-                                        },
-                                    },
-                                ],
-                                { cancelable: false }
-                            );
-                        },
-                    },
-                ],
-                { cancelable: false }
-            );
-        } else if (type === 'station') {
-            Alert.alert(
-                'Confirmation',
-                'Is it a theft?',
-                [
-                    {
-                        text: 'No',
-                        onPress: async () => {
-                            try {
-                                const response = await postData('/issues', {
-                                    location: {
-                                        latitude: myLocation.latitude,
-                                        longitude: myLocation.longitude
-                                    },
-                                    type: type,
-                                    e_type: 'non-theft'
-                                }, userData?.token);
-
-                                if (!response._id) {
-                                    Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
-                                    return;
+                                {
+                                    type === 'station' ?
+                                    Alert.alert("Success", 'Nearest Police Station has been notified!') :
+                                    Alert.alert("Success", 'Nearest Hospital has been notified!');
                                 }
-
-                                socket.emit("sendLocation", {
-                                    latitude: myLocation.latitude,
-                                    longitude: myLocation.longitude,
-                                    type: type,
-                                    e_type: 'non-theft',
-                                    user: userData.user
-                                });
-
-                                Alert.alert("Success", 'Nearest Police Station has been notified!');
+                
                             } catch (error) {
                                 console.error('Error creating issue:', error);
                                 Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
                             }
-                        },
-                    },
-                    {
-                        text: 'Yes',
-                        onPress: () => {
-                            Alert.alert(
-                                'Confirmation',
-                                'Is the suspect armed?',
-                                [
-                                    {
-                                        text: 'No',
-                                        onPress: async () => {
-                                            try {
-                                                const response = await postData('/issues', {
-                                                    location: {
-                                                        latitude: myLocation.latitude,
-                                                        longitude: myLocation.longitude
-                                                    },
-                                                    type: type,
-                                                    e_type: 'unarmed-theft'
-                                                }, userData?.token);
-
-                                                if (!response._id) {
-                                                    Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
-                                                    return;
-                                                }
-
-                                                socket.emit("sendLocation", {
-                                                    latitude: myLocation.latitude,
-                                                    longitude: myLocation.longitude,
-                                                    type: type,
-                                                    e_type: 'unarmed-theft',
-                                                    user: userData.user
-                                                });
-
-                                                Alert.alert("Success", 'Nearest Police Station has been notified for unarmed suspect!');
-                                            } catch (error) {
-                                                console.error('Error creating issue:', error);
-                                                Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
-                                            }
-                                        },
-                                    },
-                                    {
-                                        text: 'Yes',
-                                        onPress: async () => {
-                                            try {
-                                                const response = await postData('/issues', {
-                                                    location: {
-                                                        latitude: myLocation.latitude,
-                                                        longitude: myLocation.longitude
-                                                    },
-                                                    type: type,
-                                                    e_type: 'armed-theft'
-                                                }, userData?.token);
-
-                                                if (!response._id) {
-                                                    Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
-                                                    return;
-                                                }
-
-                                                socket.emit("sendLocation", {
-                                                    latitude: myLocation.latitude,
-                                                    longitude: myLocation.longitude,
-                                                    type: type,
-                                                    e_type: 'armed-theft',
-                                                    user: userData.user
-                                                });
-
-                                                Alert.alert("Success", 'Nearest Police Station has been notified for armed suspect!');
-                                            } catch (error) {
-                                                console.error('Error creating issue:', error);
-                                                Alert.alert("Error", 'Failed to notify the authorities. Please try again.');
-                                            }
-                                        },
-                                    },
-                                ],
-                                { cancelable: false }
-                            );
                         },
                     },
                 ],
@@ -324,9 +153,7 @@ const Alarm = (type) => {
         } else {
             Alert.alert("Error", 'Couldn\'t get your location');
         }
-    }
-};
-    
+    };
 
     return (
         <View style={styles.container}>
@@ -340,7 +167,7 @@ const Alarm = (type) => {
                             style={styles.police}
                         />
                         <View style={styles.btnContainer}>
-                            <TouchableOpacity style={styles.btn} onPress = {() => {Alarm("station")}}>
+                            <TouchableOpacity style={styles.btn} onPress={() => handleAlarmPress("station")}>
                                 <Text style={styles.btnText}>Alarm Police!</Text>
                             </TouchableOpacity>
                         </View>
@@ -353,7 +180,7 @@ const Alarm = (type) => {
                                 style={styles.police}
                             />
                             <View style={styles.btnContainer}>
-                                <TouchableOpacity style={styles.btn} onPress = {() => {Alarm("hospital")}}>
+                                <TouchableOpacity style={styles.btn} onPress={() => handleAlarmPress("hospital")}>
                                     <Text style={styles.btnText}>Alarm Hospital!</Text>
                                 </TouchableOpacity>
                             </View>
@@ -372,6 +199,24 @@ const Alarm = (type) => {
                         </View>
                     </View>
                 </View>
+            )}
+            {dropdownVisible && (
+                <TouchableOpacity 
+                    style={styles.overlay} 
+                    onPress={() => setDropdownVisible(false)}
+                    activeOpacity={1}
+                >
+                    <View style={styles.dropdownContainer}>
+                        <ModalDropdown
+                            options={dropdownOptions}
+                            defaultValue="Select an emergency type"
+                            onSelect={handleOptionSelect}
+                            style={styles.dropdown}
+                            textStyle={styles.dropdownText}
+                            dropdownStyle={styles.dropdownList}
+                        />
+                    </View>
+                </TouchableOpacity>
             )}
         </View>
     );
@@ -392,7 +237,6 @@ const styles = StyleSheet.create({
         flex: 1,
         width: "100%",
         height: null,
-        // resizeMode: "contain",
     },
     up: {
         flex: 0.5,
@@ -429,22 +273,37 @@ const styles = StyleSheet.create({
         padding: 10,
         alignItems: "center",
         borderRadius: 5,
-        width: "70%"
+        width: "70%",
     },
     btnText: {
-        color: "#fff",
-        justifyContent: "center",
-        textAlign: "center"
+        color: "#fff"
     },
-    locationContainer: {
-        marginTop: 20,
-        padding: 10,
-        backgroundColor: '#f0f0f0',
+    overlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    dropdownContainer: {
+        backgroundColor: 'white',
         borderRadius: 10,
+        padding: 10,
     },
-    locationText: {
-        color: '#333',
+    dropdown: {
+        width: 200,
     },
+    dropdownText: {
+        fontSize: 16,
+        padding: 10,
+    },
+    dropdownList: {
+        width: '100%',
+        borderRadius: 10,
+    }
 });
 
 export default Home;
